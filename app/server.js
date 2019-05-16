@@ -6,60 +6,18 @@ const port = 8081;
 const formidable = require("formidable");
 const parse = require("csv-parse");
 var fs = require("fs");
+const routes = require("./routes");
 
-app.get("/file", function(req, res) {
-  res.sendFile(path.join(__dirname + "/index.html"));
+import moment from "moment";
+
+moment.updateLocale('en', {
+  week : {
+      dow : 1,
+      doy : 4
+   }
 });
 
-app.post("/file", function(req, res) {
-  new formidable.IncomingForm()
-    .parse(req)
-    .on("field", (name, field) => {
-      console.log("Field", name, field);
-    })
-    .on("file", (name, file) => {
-      var workbook = new excel.Workbook();
-      var worksheet = workbook.addWorksheet("Sheet 1");
-      var style = workbook.createStyle({
-        font: {
-          color: "#FF0800",
-          size: 12
-        },
-        numberFormat: "$#,##0.00; ($#,##0.00); -"
-      });
-
-      fs.readFile(file.path, "utf8", function(err, data) {
-        if (err) throw err;
-        // data.forEach(function(d, i) {
-
-        parse(data, function(err, records) {
-          Array.from(records).forEach(function(item, index) {
-            console.log(item);
-            worksheet.cell(index + 1, 1).string(item[0]).style(style);
-            worksheet.cell(index + 1, 2).string(item[1]).style(style);
-          });
-        });
-
-        workbook.write("Excel.xlsx");
-        // });
-      });
-
-      // Create a new instance of a Workbook class
-      var file = "Excel.xlsx";
-      // res.setHeader("")
-      res.download(file); // Set disposition and send it.
-    })
-    .on("aborted", () => {
-      console.error("Request aborted by the user");
-    })
-    .on("error", err => {
-      console.error("Error", err);
-      throw err;
-    })
-    .on("end", () => {
-      res.end();
-    });
-});
+app.use(routes);
 
 app.get("/download", function(req, res) {
   // Require library
