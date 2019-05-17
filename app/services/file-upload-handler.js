@@ -1,12 +1,10 @@
-const formidable = require("formidable");
-const fs = require("fs");
-const { parse } = require("./csv-parser");
-import handler from "./export-handler";
+import formidable from "formidable";
+import fs from "fs";
+import { parse } from "./csv-parser";
 import init from "./timesheet-initializer";
-import calculate from './timesheet-calculator';
+import populate from "./timesheet-calculator";
 
-function handle(req, callback) {
-  let result;
+export default function handle(req, callback) {
   new formidable.IncomingForm()
     .parse(req)
     .on("field", (name, field) => {
@@ -19,8 +17,8 @@ function handle(req, callback) {
         parse(data, items => {
           // console.log(items);
           const timesheet = init(items);
-          calculate(timesheet);
-          console.log(timesheet);
+          populate(timesheet);
+          // console.log(timesheet);
           // handler(items, () => {
           //   return callback(items.map(i => i.date));
           // });
@@ -30,7 +28,3 @@ function handle(req, callback) {
       });
     });
 }
-
-module.exports = {
-  handle: handle
-};

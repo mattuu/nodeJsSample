@@ -1,7 +1,8 @@
 import moment from "moment";
 import { WorkWeek } from "../models";
+import calculate from "./work-week-calculator";
 
-export default function calculate(timesheet) {
+export default function populate(timesheet) {
   let date = moment(timesheet.startDate);
   let workWeek = new WorkWeek();
   timesheet.addWorkWeek(workWeek);
@@ -12,14 +13,13 @@ export default function calculate(timesheet) {
     if (workDay) {
       workWeek.addDay(Object.assign({}, workDay));
     } else {
-      workWeek.addDay(
-        Object.assign({}, { date: date.toISOString(), day: date.day() })
-      );
+      workWeek.addDay(Object.assign({}, { date: date.toISOString() }));
     }
 
     date.add(1, "days");
 
     if (date.day() === 1 && date.isBefore(timesheet.endDate)) {
+      calculate(workWeek);
       workWeek = new WorkWeek();
       timesheet.addWorkWeek(workWeek);
     }

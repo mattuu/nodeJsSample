@@ -1,6 +1,6 @@
 const app = (module.exports = require("express")());
 const path = require("path");
-const { handle } = require("../services").fileUploadHandler;
+import handle from "../services/file-upload-handler";
 
 app.get("/file", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "/index.html"));
