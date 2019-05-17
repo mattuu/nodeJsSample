@@ -24,7 +24,7 @@ export default function adjustTimes(workDay) {
     totalBreaksMins + adjustedDuration,
     "m"
   );
-  workDay.adjustedDuration =
+  workDay.durationAdjusted =
     moment
       .duration(
         workDay.timeOutAdjusted.diff(workDay.timeInAdjusted, "minutes"),
@@ -46,7 +46,6 @@ function adjustMinutesDown(date) {
 
 function adjustUp(number) {
   let remainder = number % round_interval;
-  console.log(remainder);
   return (
     number - remainder + (remainder > round_interval / 2 ? round_interval : 0)
   );

@@ -3,6 +3,7 @@ import fs from "fs";
 import { parse } from "./csv-parser";
 import init from "./timesheet-initializer";
 import populate from "./timesheet-calculator";
+import write from "./excel-writer";
 
 export default function handle(req, callback) {
   new formidable.IncomingForm()
@@ -18,12 +19,15 @@ export default function handle(req, callback) {
           // console.log(items);
           const timesheet = init(items);
           populate(timesheet);
+
+          return () => write(timesheet);
           // console.log(timesheet);
           // handler(items, () => {
           //   return callback(items.map(i => i.date));
           // });
 
-          return callback(timesheet.workWeeks);
+          // return callback();
+          // return callback(timesheet.workWeeks);
         });
       });
     });

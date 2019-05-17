@@ -1,34 +1,18 @@
 export class Timesheet {
   constructor(workDays) {
-    this._workDays = workDays;
-    this._workWeeks = [];
-  }
-
-  get startDate() {
-    return this._startDate;
-  }
-
-  get endDate() {
-    return this._endDate;
-  }
-
-  get workDays() {
-    return this._workDays;
-  }
-
-  get workWeeks() {
-    return this._workWeeks;
+    this.workDays = workDays;
+    this.workWeeks = [];
   }
 
   adjustStartDate(date) {
-    this._startDate = date;
+    this.startDate = date;
   }
 
   adjustEndDate(date) {
-    this._endDate = date;
+    this.endDate = date;
   }
 
   addWorkWeek(week) {
-    this._workWeeks.push(week);
+    this.workWeeks.push(week);
   }
 }

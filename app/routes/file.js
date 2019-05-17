@@ -7,7 +7,8 @@ app.get("/file", (req, res) => {
 });
 
 app.post("/file", (req, res) => {
-  handle(req, data => {
-    res.send(data);
+  handle(req, callback => {
+    console.log(callback);
+    return callback(res);
   });
 });
