@@ -1,6 +1,7 @@
 import excel from "excel4node";
+import { cpus } from "os";
 
-export default function write(timesheet) {
+export default function write(timesheet, response) {
   var workbook = new excel.Workbook();
 
   // Add Worksheets to the workbook
@@ -13,56 +14,67 @@ export default function write(timesheet) {
   });
   // Create a reusable style
 
-  //   writeWorkWeek(worksheet, timesheet.workWeeks[1], 1, 1);
+  let row = 1;
+  timesheet.workWeeks.forEach(ww => {
+    writeWorkWeek(worksheet, ww, row, 1);
+    row += 6;
+  });
 
-  worksheet.cell(1, 1).string("My simple string");
-
-  //   properties.forEach((property, index) => {
-  //     worksheet
-  //       .cell(index + 1, 1)
-  //       .string(property.id)
-  //       .style(style);
-  //     worksheet
-  //       .cell(index + 1, 2)
-  //       .string(property.name)
-  //       .style(style);
-  //   });
-  //   workbook.write("ExcelFile.xlsx", function(err, stats) {
-  //     if (err) {
-  //       console.error(err);
-  //     } else {
-  //       console.log(stats); // Prints out an instance of a node.js fs.Stats object
-  //     }
-  //   });
-  //   workbook.write("Excel.xlsx");
-  return worksheet.write;
+  return workbook.write("ExcelFile.xlsx", response);
 }
 
 function writeWorkWeek(worksheet, workWeek, row, col) {
-  for (let wd in workWeek.days) {
-    writeWorkDay(worksheet, wd, col, row);
-  }
+  worksheet.cell(row + 1, col).string("start");
+  worksheet.cell(row + 2, col).string("break");
+  worksheet.cell(row + 3, col).string("end");
+  worksheet.cell(row + 4, col).string("duration");
+
+  col++;
+
+  workWeek.days.forEach(wd => {
+    writeWorkDay(worksheet, wd, row, col);
+    col++;
+  });
 }
 
 function writeWorkDay(worksheet, workDay, row, col) {
   worksheet
-    .cell(col, row)
+    .cell(row, col)
     .date(workDay.date)
     .style({ numberFormat: "dd-MMM" });
-  worksheet
-    .cell(col, row + 1)
-    .date(workDay.timeInAdjusted)
-    .style({ numberFormat: "HH:mm" });
-  worksheet
-    .cell(col, row + 2)
-    .date(workDay.totalBreaksAdjusted)
-    .style({ numberFormat: "HH:mm" });
-  worksheet
-    .cell(col, row + 3)
-    .date(workDay.timeOutAdjusted)
-    .style({ numberFormat: "HH:mm" });
-  worksheet
-    .cell(col, row + 4)
-    .date(workDay.durationAdjusted)
-    .style({ numberFormat: "HH:mm" });
+
+  // worksheet
+  //   .cell(col, row)
+  //   .date(workDay.date)
+  //   .style({ numberFormat: "dd-MMM" });
+
+  // if (workDay.timeIn) {
+
+  if (workDay.timeIn) {
+    worksheet
+      .cell(row + 1, col)
+      .date(workDay.timeInAdjusted)
+      .style({ numberFormat: "hh:mm" });
+
+    worksheet
+      .cell(row + 2, col)
+      .date(workDay.totalBreaksAdjusted)
+      .style({ numberFormat: "hh:mm" });
+
+    worksheet
+      .cell(row + 3, col)
+      .date(workDay.timeOutAdjusted)
+      .style({ numberFormat: "hh:mm" });
+
+    worksheet
+      .cell(row + 4, col)
+      .formula(
+        `${excel.getExcelCellRef(row + 3, col)}-${excel.getExcelCellRef(
+          row + 1,
+          col
+        )}`
+      );
+      // .string(excel.getExcelCellRef(row + 3, col) - );
+      // .style({ numberFormat: "hh:mm" });
+  }
 }

@@ -5,7 +5,7 @@ import init from "./timesheet-initializer";
 import populate from "./timesheet-calculator";
 import write from "./excel-writer";
 
-export default function handle(req, callback) {
+export default function handle(req, response) {
   new formidable.IncomingForm()
     .parse(req)
     .on("field", (name, field) => {
@@ -20,7 +20,7 @@ export default function handle(req, callback) {
           const timesheet = init(items);
           populate(timesheet);
 
-          return () => write(timesheet);
+          return write(timesheet, response);
           // console.log(timesheet);
           // handler(items, () => {
           //   return callback(items.map(i => i.date));

@@ -18,7 +18,7 @@ export default function adjustTimes(workDay) {
   const totalBreaksMins = adjustUp(
     Math.abs(moment.duration(workDay.breaks).asMinutes())
   );
-  workDay.totalBreaksAdjusted = totalBreaksMins;
+  workDay.totalBreaksAdjusted = moment.duration(totalBreaksMins, "minutes");
 
   workDay.timeOutAdjusted = moment(adjustedTimeIn).add(
     totalBreaksMins + adjustedDuration,

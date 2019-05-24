@@ -11,9 +11,11 @@ export default function populate(timesheet) {
     let workDay = timesheet.workDays.find(i => date.isSame(i.date));
 
     if (workDay) {
-      workWeek.addDay(Object.assign({}, workDay));
+      workWeek.addDay(
+        Object.assign({}, workDay, { date: workDay.date.toDate() })
+      );
     } else {
-      workWeek.addDay(Object.assign({}, { date: date.toISOString() }));
+      workWeek.addDay(Object.assign({}, { date: date.toDate() }));
     }
 
     date.add(1, "days");
